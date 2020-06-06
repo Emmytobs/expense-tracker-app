@@ -1,0 +1,58 @@
+.container {
+    margin: 30px auto 0px;
+    width: 40%;
+    height: 80vh;
+    background: #ffffff;
+}
+
+.tabBtnContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.tabBtn {
+    text-align: center;
+    flex: 1;
+    background: #c0c0c0be;
+    color: #0000005b;
+    cursor: pointer;
+    border: 0;
+    padding: 12px;
+}
+
+.transactionForm {
+    width: 100%;
+    padding: 12px;
+}
+
+.transactionForm div {
+    margin: 10px;
+    padding: 0;
+    text-align: center;
+}
+
+.transactionForm label {
+    display: block;
+    text-align: left;
+}
+
+.transactionForm input {
+    padding: 7px;
+    border: 0;
+}
+
+.transactionForm input[type="text"],
+.transactionForm input[type="number"] {
+    border-bottom: 3px solid #444;
+}
+
+.transactionForm button {
+    text-align: center;
+    cursor: pointer;
+}
+
+.transactionListContainer {
+    height: 45%;
+    overflow: auto;
+}

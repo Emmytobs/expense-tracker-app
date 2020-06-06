@@ -1,0 +1,54 @@
+
+.container {
+    margin: 30px auto 0px;
+    width: 40%;
+    height: 80vh;
+    background: #ffffff;
+}
+
+.tabBtnContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.tabBtn {
+    text-align: center;
+    flex: 1;
+    background: #c0c0c0be;
+    color: #0000005b;
+    cursor: pointer;
+    border: 0;
+    padding: 12px;
+}
+
+.form {
+    width: 100%;
+    padding: 12px;
+}
+
+.form div {
+    margin: 10px;
+    padding: 0;
+    text-align: center;
+}
+
+.form label {
+    display: block;
+    text-align: left;
+}
+
+.form input {
+    padding: 7px;
+    border: 0;
+}
+
+.form input[type="text"],
+.form input[type="number"] {
+    border-bottom: 3px solid #444;
+}
+
+.form button {
+    text-align: center;
+    cursor: pointer;
+}
