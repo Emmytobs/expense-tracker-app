@@ -1,7 +1,7 @@
 const express = require('express');
 const { authorizeRequest } = require('../middleware/middleware')()
 const Transaction = require('../models/transactionModel');
-const transactionRoutes = new express.Router();
+const transactionRoutes = express.Router();
 
 transactionRoutes.post('/add', authorizeRequest, async (req, res) => {
     const { title, amount } = req.body;

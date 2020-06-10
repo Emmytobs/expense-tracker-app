@@ -8,25 +8,28 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import auth from './auth/auth'
 import './App.css';
 
-
-function App() {
+function App(props) {
   return (
     // <GlobalProvider>
-    <>  
+    <>
       <Header />
       <Switch>
         <Route 
           path='/app'
           exact
-          render={() => {
+          render={(props) => {
             if(!auth.isAuthenticated()) {
               return <Redirect to={{ pathname: "/"}} />
             } else {
-              return <TransactionContainer />
+              return <TransactionContainer {...props} />
             }
           }} 
         />
-        <Route path='/' exact component={Home} />
+        <Route 
+          path='/' 
+          exact 
+          component={Home}
+        />
       </Switch>
     </>
     // </GlobalProvider>

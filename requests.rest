@@ -24,4 +24,4 @@ Content-Type: application/json
 ###
 GET http://localhost:5000/user/profile HTTP/1.1
 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWQ4MzQ1MzFiODQzYTA5NDBlMGFkNzAiLCJpYXQiOjE1OTEyMzE2Nzd9.wgPUgal-7VrFMNXYErHxOyVyXTlsJU5Jdmn90Kn0O7U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWRiMDAxMDQ5NTJhNjI0ODQ3NTc1MTUiLCJpYXQiOjE1OTE2OTA3MDN9.8le0ANyUfkIhs_KT0njsXzuYuucsuL7mA1l3zn4k54g

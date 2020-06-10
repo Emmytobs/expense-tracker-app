@@ -13,6 +13,10 @@ const transactionRoute = require('./routes/transactionRoutes');
 app.use('/user', userRoute);
 app.use('/transaction', transactionRoute);
 
+// app.post('/test', (req, res) => {
+//     const headers = req.headers('Authorization');
+// })
+
 app.get('/books', (req, res) => {
     res.json([
         {

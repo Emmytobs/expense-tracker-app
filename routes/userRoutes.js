@@ -1,16 +1,13 @@
 const express = require('express');
-const bcrypt = require('bcryptjs')
 const User = require('../models/userModel')
-const userRoute = new express.Router();
+const userRoute = express.Router();
 const app = express();
-const { authorizeRequest } = require('../middleware/middleware')();
+const middleware = require('../middleware/middleware')();
 
-
+// Hash user's password using the middleware
+userRoute.use('/signup', middleware.hashPassword);
 userRoute.post('/signup', async (req, res) => {
-    const { password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 8);
-
-    const user = new User({ ...req.body, password: hashedPassword });
+    const user = new User({ ...req.body, password: req.hashedPassword });
     try {
         await user.save();
         const token = await user.generateJWT();
@@ -34,11 +31,24 @@ userRoute.post('/login', async (req, res) => {
         res.json({ user, token })
     } catch(error) {
         console.log(error)
-        res.status(404).json(error)
+        res.status(404).send(error)
     }
 })
 
-userRoute.get('/profile', authorizeRequest, (req, res) => {
+userRoute.delete('/logoutAll', middleware.authorizeRequest, async (req, res) => {
+    try {
+        const { user } = req
+        user.tokens = [];
+        await user.save();
+        res.json();
+    } catch(error) {
+        res.status(404).send(error);
+    }
+})
+
+// Authenticate the user using middleware
+userRoute.use('/profile', middleware.authorizeRequest);
+userRoute.get('/profile', (req, res) => {
     try { 
         const { user, token } = req;
         res.json({ user, token });

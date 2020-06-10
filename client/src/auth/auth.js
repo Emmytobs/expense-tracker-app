@@ -1,25 +1,27 @@
-// class Auth {
+import axios from 'axios'
 
-//     user;
-//     authenticated;
-//     constructor() {
-//         this.user = '';
-//     }
+class Auth {
 
-//     async loginUser(user) {
-//         // Fire off a post request to /user/signup
-//         this.user = user;
-//         return user
-//     }
+    user;
+    authenticated;
+    constructor() {
+        this.user = '';
+    }
 
-//     isAuthenticated() {
-//         return !!this.user;
-//     }
-// }
+    async loginUser(user) {
+        // Fire off a post request to /user/signup
+        this.user = user;
+        return user
+    }
 
-// const auth = new Auth();
+    isAuthenticated() {
+        return !!this.user;
+    }
+}
 
-// export default auth;
+const auth = new Auth();
+
+export default auth;
 
 // const axios = require('axios');
 // const express = require('express');

@@ -7,8 +7,11 @@ import TransactionList from "./TransactionListComponent";
 import TabComponent from './TabComponent';
 import TransactionFormComponent from './TransactionFormComponent';
 import AmountLeftComponent from './AmountLeftComponent';
+import axios from "axios";
 
-function TransactionContainer() {
+function TransactionContainer(props) {
+
+  
   const [isExpense, setIsExpense] = useState(true);
   
   const [transactionForm, setTransactionForm] = useState({
@@ -17,38 +20,34 @@ function TransactionContainer() {
     expense: ''
   })
   // const { addTransaction, transactions } = useContext(GlobalContext);
-
   const [transactions, setTransactions] = useState([]);
   const [amountRemaining, setAmountRemaining] = useState(0);
+  
+  const [ token, setToken ] = useState('');
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setToken(token);
+  }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // addTransaction({ title, amount: Number(amount) })
-    
-    // if(transactionForm.title === '' || transactionForm.amount === '' || transactionForm.expense === '') {
-    //   setError('Please fill in all fields');
-    //   return;
-    // }
-
-    // if(transactionForm.expense < 0 || transactionForm.amount < 0) {
-    //   setError('Amount or expense cannot be less than zero');
-    //   // Make an error to show if the amount is less than zero
-    //   return;
-    // }
-
-    //  if (isExpense) {
-    //     addTransaction({
-    //       title: transactionForm.title,
-    //       amount: -1 * Number(transactionForm.expense),
-    //       isExpense: true
-    //     })
-    // } else if(!isExpense) {
-    //     addTransaction({
-    //       title: transactionForm.title,
-    //       amount: Number(transactionForm.amount),
-    //       isExpense: false
-    //     })
-    // }
+  
+    function addExpense(transactionForm) {
+      const expense = {
+        title: transactionForm.title,
+        amount: -1 * Number(transactionForm.expense),
+        isExpense: true
+      }
+      const transaction = axios.post('/transaction/add', expense, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(transaction => console.log(transaction))
+        .catch(error => console.log(error));
+    }
+    addExpense(transactionForm);
 
     setTransactions((prevtransactions) => {
       let newTransaction;
@@ -59,7 +58,7 @@ function TransactionContainer() {
             title: transactionForm.title,
             amount: -1 * Number(transactionForm.expense),
             isExpense: true
-          },
+          }
         ];
       } else if(!isExpense) {
         newTransaction = [

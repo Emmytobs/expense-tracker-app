@@ -13,9 +13,11 @@ const transactionSchema = Schema({
         required: true,
         trim: true,
     },
-    owner: {
+    isExpense: { 
+        type: Boolean,
+    },
+    owner: {}
 
-    }
 })
 
 const Transaction = mongoose.model
