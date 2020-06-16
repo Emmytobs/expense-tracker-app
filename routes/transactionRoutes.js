@@ -28,4 +28,18 @@ transactionRoutes.get('/transactions', authorizeRequest, async (req, res) => {
     }
 })
 
+transactionRoutes.get('/transaction/:id', authorizeRequest, async (req, res) => {
+    const { id: _id } = req.params;
+
+    try {
+        const transaction = await Transaction.findOne({ _id, owner: req.user._id });
+        if(!transaction) {
+            return res.status(404).json({ error: 'No transaction found' });
+        }
+        res.json(transaction)
+    } catch(error) {
+        res.status(500).json(error);
+    }
+})
+
 module.exports = transactionRoutes;
