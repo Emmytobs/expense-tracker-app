@@ -1,29 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import Header from './Header/HeaderComponent'
 import TransactionContainer from './TransactionContainer/TransactionContainerComponent';
+import ProtectedTransactionContainer from './ProtectedRoutes/ProtectedTransactionContainer';
 import Home from './Home/HomeComponent';
-// import {GlobalProvider} from './context/GlobalContext';
+import { AuthProvider, AuthContext } from './context/AuthContext';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import auth from './auth/auth'
 import './App.css';
 
 function App(props) {
+  
   return (
     // <GlobalProvider>
-    <>
+    <AuthProvider>
       <Header />
       <Switch>
-        <Route 
+        <ProtectedTransactionContainer 
           path='/app'
           exact
-          render={(props) => {
-            if(!auth.isAuthenticated()) {
-              return <Redirect to={{ pathname: "/"}} />
-            } else {
-              return <TransactionContainer {...props} />
-            }
-          }} 
+          component={TransactionContainer}
         />
         <Route 
           path='/' 
@@ -31,7 +27,7 @@ function App(props) {
           component={Home}
         />
       </Switch>
-    </>
+    </AuthProvider>
     // </GlobalProvider>
   );
 }

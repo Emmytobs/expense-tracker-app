@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const transactionSchema = Schema({
+const transactionSchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -17,7 +17,8 @@ const transactionSchema = Schema({
         type: Boolean,
     },
     owner: {}
-
+}, {
+    timestamps: true
 })
 
 const Transaction = mongoose.model

@@ -1,63 +1,64 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import auth from '../auth/auth';
 import styles from './Home.module.css'
 import TabComponent from '../TransactionContainer/TabComponent';
-import Cookies from 'universal-cookie';
-import axios from 'axios'
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
 function HomeComponent(props) {
 
-    const [ user, setUser ] = React.useState('');
-    // const cookies = new Cookies();
+    const { user, setUser } = useContext(AuthContext);
+    
+    const [ error, setError ] = React.useState('');
 
-    React.useEffect(() => {
-        // cookies.set('name', 'Emmytobs', { httpOnly: true });
-    }, []);
-
-    const [ loginInfo, setLoginInfo ] = React.useState({
+    const [ loginData, setLoginData ] = React.useState({
         username: '',
         password: '',
+    });
+
+    const [ transactionData, setTransactionData ] = React.useState({
         title: '',
         amount: 0
-    })
+    });
 
     const loginUser = async (e) => {
         e.preventDefault();
-        // cookies.set('name', 'Emmytobs', { httpOnly: true });
         try {
-            // await auth.loginUser(user);
-            // props.history.push('/app');
-            const { data } = await axios.post('/user/login', loginInfo);
-            setUser({ ...data.user, token: data.token });
-            localStorage.setItem('token', data.token);
-            
-            auth.user = data.user;
+            const { data } = await axios.post('/user/login', loginData);
 
+            const user = { ...data.user, token: data.token };
+            setUser(user);
+
+            localStorage.setItem('user', JSON.stringify(user));
+            
             props.history.push('/app');
         } catch(error) {
+            const errorMessage = error.toJSON().message;
             console.log(error)
+            setError(errorMessage);
         }           
     }
 
     const logoutUser = async () => {
     }
 
-    const createTransaction = async (e) => {
-        e.preventDefault();
-        console.log(loginInfo);
-        const { title, amount } = loginInfo;
-        const body = { title, amount: Number(amount) };
-        // Why this error: Unhandled Rejection (TypeError): name.toUpperCase is not a function?
-        const transaction = await axios.post('/transaction/add', body, {
-            headers: {
-                'Authorization': `Bearer ${user.token}`
-            }
-        });
-        console.log(transaction)
-    }
-    const handleChange = (e) => {
+    // const createTransaction = async (e) => {
+    //     e.preventDefault();
+    //     console.log(loginInfo);
+    //     const { title, amount } = loginInfo;
+    //     const body = { title, amount: Number(amount) };
+    //     // Why this error: Unhandled Rejection (TypeError): name.toUpperCase is not a function?
+    //     const transaction = await axios.post('/transaction/add', body, {
+    //         headers: {
+    //             'Authorization': `Bearer ${user.token}`
+    //         }
+    //     });
+    //     console.log(transaction)
+    // }
+
+    const updateLoginData = (e) => {
         const { name, value } = e.target;
-        setLoginInfo({ ...loginInfo, [name]: value });
+        setLoginData({ ...loginData, [name]: value });
     }
 
     return (
@@ -67,15 +68,16 @@ function HomeComponent(props) {
           </div>
           <form onSubmit={loginUser}>
             <label>Username</label>
-            <input onChange={handleChange} name="username" type='text' />
+            <input onChange={updateLoginData} name="username" type='text' />
             <br />
             <label>Password</label>
-            <input onChange={handleChange} name="password" type='password' />
+            <input onChange={updateLoginData} name="password" type='password' />
             <br />
             <button>Login</button>
             <br />
             <button onClick={logoutUser}>Logout</button>
           </form>
+            {error && <div>{error}</div>}
             {/* {
             user.token && 
                 <div>

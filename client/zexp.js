@@ -1,4 +1,4 @@
-const changeCaseOfName = function (name) {
+const changeCaseOfName = async function (name) {
    try { 
         const lowerCase = name.toLocaleLowerCase();
         if(!name) {
@@ -11,5 +11,6 @@ const changeCaseOfName = function (name) {
         return error;
     }
 }
+
 
 // console.log(changeCaseOfName(''));

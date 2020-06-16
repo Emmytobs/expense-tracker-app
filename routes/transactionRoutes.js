@@ -9,7 +9,12 @@ transactionRoutes.post('/add', authorizeRequest, async (req, res) => {
         Number(amount);
     }
     const owner = req.user._id;
-    const transaction = new Transaction({ title, amount, owner });
+    const transaction = new Transaction({
+        title,
+        amount,
+        isExpense: amount < 0 ? true : false,
+        owner
+    });
     await transaction.save()
     res.status(201).json(transaction)
 });
