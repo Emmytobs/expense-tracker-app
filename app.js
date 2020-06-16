@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5000;
 const userRoute = require('./routes/userRoutes');
 const transactionRoute = require('./routes/transactionRoutes');
 app.use('/user', userRoute);
-app.use('/transaction', transactionRoute);
+app.use(transactionRoute);
 
 // app.post('/test', (req, res) => {
 //     const headers = req.headers('Authorization');
