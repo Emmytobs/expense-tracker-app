@@ -13,10 +13,6 @@ const transactionRoute = require('./routes/transactionRoutes');
 app.use('/user', userRoute);
 app.use(transactionRoute);
 
-// app.post('/test', (req, res) => {
-//     const headers = req.headers('Authorization');
-// })
-
 app.get('/books', (req, res) => {
     res.json([
         {
@@ -29,3 +25,6 @@ app.get('/books', (req, res) => {
 app.listen(PORT, () => {
     console.log('Server running on port ' + PORT)
 })
+    
+// Install multer at 1.4.1
+// Install links.mead.io/files

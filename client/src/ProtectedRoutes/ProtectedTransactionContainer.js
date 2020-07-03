@@ -10,11 +10,11 @@ function ProtectedTransactionContainer({ component: RouteComponent, ...remaining
       <Route 
         {...remainingProps}
         render={(routeProps) => {
-          if(!!user) {
+          // if(!!user) {
             return <RouteComponent {...routeProps} />
-          } else {
-            return <Redirect to={"/"} />
-          }
+          // } else {
+          //   return <Redirect to={"/"} />
+          // }
         }} 
       />
   )

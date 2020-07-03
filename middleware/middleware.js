@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const Transaction = require('../models/transactionModel');
 const bcrypt = require('bcryptjs')
 
 module.exports = function middleware() {
@@ -18,7 +19,7 @@ module.exports = function middleware() {
             req.token = token;
             next();
         } catch(error) {
-            res.status(400).json(error);
+            res.status(400).json(error);            
         }
         
     }  
@@ -29,10 +30,21 @@ module.exports = function middleware() {
         req.hashedPassword = hashedPassword;
         next();
     }
+
+    const clearDeletedUserTransactions = async (req, res, next) => {
+        try {
+            await Transaction.deleteMany({ owner: req.user._id });
+            console.log(req.user._id)    
+            next()
+        } catch(error) {
+            res.status(500).json(error);
+        }
+    }
     
     return {
         authorizeRequest,
-        hashPassword
+        hashPassword,
+        clearDeletedUserTransactions
     }
     
 }

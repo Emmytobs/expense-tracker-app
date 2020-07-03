@@ -7,6 +7,8 @@ const middleware = require('../middleware/middleware')();
 // Hash user's password using the middleware
 userRoute.use('/signup', middleware.hashPassword);
 userRoute.post('/signup', async (req, res) => {
+    // Add the hashed password, then
+    // Add the rest of the request body
     const user = new User({ ...req.body, password: req.hashedPassword });
     try {
         await user.save();
@@ -18,20 +20,13 @@ userRoute.post('/signup', async (req, res) => {
 })
 
 userRoute.post('/login', async (req, res) => {
-    // Write code to check db for a user that matches the username, password, and email in the request body
     try {
+        // Write code to check db for a user that matches the username, password, and email in the request body
         const user = await User.findByLoginCredentials(req.body);
-        // if(!user) {
-        //     // 
-        //     // This message is not sent to the client. Work on that
-        //     // 
-        //     throw new Error('Your login credentials don\'t match our records')
-        // }
         const token = await user.generateJWT();
-        res.json({ user, token })
+        res.json({ user, token });
     } catch(error) {
-        console.log(error)
-        res.status(404).send(error)
+        res.status(404).send({"error": error.message});
     }
 })
 
@@ -57,6 +52,14 @@ userRoute.get('/profile', (req, res) => {
     }
     // const users = await User.find({});
     // res.json(users);
+})
+
+userRoute.use('/delete', middleware.authorizeRequest);
+userRoute.use('/delete', middleware.clearDeletedUserTransactions);
+userRoute.delete('/delete', async (req, res) => {
+    const { _id } = req.user;
+    await req.user.remove();
+    res.json(req.user)
 })
 
 module.exports = userRoute;

@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 
-import Header from './Header/HeaderComponent'
-import TransactionContainer from './TransactionContainer/TransactionContainerComponent';
+import Header from './Components/Header'
+import TransactionContainer from './Components/TransactionContainer/TransactionContainerComponent';
 import ProtectedTransactionContainer from './ProtectedRoutes/ProtectedTransactionContainer';
-import Home from './Home/HomeComponent';
+import Home from './Components/Home';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import auth from './auth/auth'
