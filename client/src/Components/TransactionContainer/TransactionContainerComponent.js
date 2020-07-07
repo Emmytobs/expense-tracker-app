@@ -4,20 +4,16 @@ import styles from "./TransactionContainer.module.css";
 // import axios
 
 import TransactionList from "./TransactionListComponent";
-import TabComponent from './TabComponent';
 import TransactionFormComponent from './TransactionFormComponent';
 import AmountLeftComponent from './AmountLeftComponent';
 import axios from "axios";
 
 function TransactionContainer(props) {
-
-  
-  const [isExpense, setIsExpense] = useState(true);
   
   const [transactionForm, setTransactionForm] = useState({
     title: '',
     amount: '',
-    expense: ''
+    type: ''
   })
   // const { addTransaction, transactions } = useContext(GlobalContext);
   const [transactions, setTransactions] = useState([]);
@@ -47,24 +43,26 @@ function TransactionContainer(props) {
         .then(transaction => console.log(transaction))
         .catch(error => console.log(error));
     }
-    addExpense(transactionForm);
+    // addExpense(transactionForm);
 
     setTransactions((prevtransactions) => {
       let newTransaction;
-      if (isExpense) {
+      if (transactionForm.type === "expense") {
         newTransaction = [
           ...prevtransactions,
           {
-            title: transactionForm.title,
-            amount: -1 * Number(transactionForm.expense),
+            ...transactionForm,
+            // Since it is an expense, the amount should be a negative value
+            amount: -1 * Number(transactionForm.amount),
             isExpense: true
           }
         ];
-      } else if(!isExpense) {
+      } else {
         newTransaction = [
           ...prevtransactions,
           {
-            title: transactionForm.title,
+            ...transactionForm,
+            // If it is not an expense, the amount should be a positive value
             amount: Number(transactionForm.amount),
             isExpense: false
           },
@@ -110,35 +108,23 @@ function TransactionContainer(props) {
     calculateAmountRemaining(totalExpense, totalIncome);
   }, [transactions])
 
-  const changeTab = (e) => {
-    const { id } = e.target;
-    if (id === "expense-tab") {
-      setIsExpense(true);
-    } else if (id === "amount-tab") {
-      setIsExpense(false);
-    }
-  };
-
   return (
-    <div className={styles.container}>
-      <div>
-        <TabComponent isExpense={isExpense} changeTab={changeTab} styles={styles} />
+    <>
+        {/* <TabComponent isExpense={isExpense} changeTab={changeTab} styles={styles} /> */}
+        <AmountLeftComponent amountRemaining={amountRemaining} />
+        <div>
+          <p>Your recent transactions:</p>
+          {/* <TransactionList transaction={transactionForm} transactionsToDisplay={5} /> */}
+        </div>
         <TransactionFormComponent 
           handleChange={handleChange} 
           handleSubmit={handleSubmit} 
-          transactionFormStyle={styles.transactionForm} 
-          isExpense={isExpense}
+          transactionFormStyle={styles.transactionForm}
           transactionForm={transactionForm}
         />
 
-        <AmountLeftComponent amountRemaining={amountRemaining} />
-        <div className={styles.transactionListContainer}>
-          {transactions.map((transaction, index) => (
-            <TransactionList key={index} transaction={transaction} />
-          ))}
-        </div>
-      </div>
-    </div>
+        
+    </>
   );
 }
 

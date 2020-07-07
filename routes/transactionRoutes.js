@@ -22,7 +22,7 @@ transactionRoutes.post('/transaction', authorizeRequest, async (req, res) => {
 
 // Get all transactions
 transactionRoutes.get('/transactions', authorizeRequest, async (req, res) => {
-    // GET /transactions?isExpense=true&amount=10&sortBy=createdAt_1&limit=5&skip=0
+    // GET /transactions?isExpense=true&amount=10&sortBy=createdAt_-1&limit=5&skip=0
     const { isExpense, amount, limit = 10, skip = 0, sortBy } = req.query;
 
     let match = {};

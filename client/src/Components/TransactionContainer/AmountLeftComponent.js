@@ -1,6 +1,8 @@
 import React from 'react'
 
 function AmountLeftComponent({ amountRemaining }) {
+  // The amount remaining component should display the total expenses and total amount side by side in red and green colors respectively.-m-1
+  // It should also dispaly the amount remaining accordingly
     return (
         <div style={{ textAlign: "center" }}>
           {amountRemaining < 0 ? (
