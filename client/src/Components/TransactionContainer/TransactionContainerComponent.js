@@ -16,7 +16,11 @@ function TransactionContainer(props) {
     type: ''
   })
   // const { addTransaction, transactions } = useContext(GlobalContext);
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState([{
+    title: "Electricity Bills",
+    amount: 20,
+    type: 'expense'
+  }]);
   const [amountRemaining, setAmountRemaining] = useState(0);
   
   const [ token, setToken ] = useState('');
@@ -53,8 +57,7 @@ function TransactionContainer(props) {
           {
             ...transactionForm,
             // Since it is an expense, the amount should be a negative value
-            amount: -1 * Number(transactionForm.amount),
-            isExpense: true
+            amount: -1 * Number(transactionForm.amount)
           }
         ];
       } else {
@@ -63,8 +66,7 @@ function TransactionContainer(props) {
           {
             ...transactionForm,
             // If it is not an expense, the amount should be a positive value
-            amount: Number(transactionForm.amount),
-            isExpense: false
+            amount: Number(transactionForm.amount)
           },
         ];
       }
@@ -99,9 +101,11 @@ function TransactionContainer(props) {
       setAmountRemaining(amountRemaining);
     }
 
+    // If there is an expense, sum up the expenses
     if(expense.length) {
       totalExpense = expense.reduce((prev, current) => prev + current)
     } 
+    // If there is an income, sum up the income
     if(income.length) {
       totalIncome = income.reduce((prev, current) => prev + current)
     }
@@ -112,9 +116,15 @@ function TransactionContainer(props) {
     <>
         {/* <TabComponent isExpense={isExpense} changeTab={changeTab} styles={styles} /> */}
         <AmountLeftComponent amountRemaining={amountRemaining} />
-        <div>
+        <div style={{maxHeight: '400px', overflow: 'auto'}}  className="w-3/4 sm:max-w-md lg:max-w-md mx-auto py-4 px-2 bg-white">
           <p>Your recent transactions:</p>
-          {/* <TransactionList transaction={transactionForm} transactionsToDisplay={5} /> */}
+          {transactions.map(transaction => 
+            <TransactionList transaction={transaction} transactionsToDisplay={5} />)
+          }
+          <button className="text-center text-gray-900 bg-gray-400">View older transations</button>
+        </div>
+        <div className="text-center mt-4">
+          Create a new transaction
         </div>
         <TransactionFormComponent 
           handleChange={handleChange} 

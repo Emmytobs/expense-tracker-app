@@ -13,6 +13,7 @@ function TransactionFormComponent(props) {
             type="text"
             onChange={props.handleChange}
             value={props.transactionForm.title}
+            placeholder="Transaction title"
             labelText="Enter title"
           />
           <div className="mt-3">
