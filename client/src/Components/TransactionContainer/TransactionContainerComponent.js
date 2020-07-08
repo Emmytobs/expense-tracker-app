@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import styles from "./TransactionContainer.module.css";
-// import { GlobalContext } from '../context/GlobalContext';
+import { GlobalContext } from '../../context/GlobalContext';
 // import axios
 
 import TransactionList from "./TransactionListComponent";
@@ -15,15 +15,12 @@ function TransactionContainer(props) {
     amount: '',
     type: ''
   })
-  // const { addTransaction, transactions } = useContext(GlobalContext);
-  const [transactions, setTransactions] = useState([{
-    title: "Electricity Bills",
-    amount: 20,
-    type: 'expense'
-  }]);
+  const { transactions, setTransactions } = useContext(GlobalContext);
+
   const [amountRemaining, setAmountRemaining] = useState(0);
   
   const [ token, setToken ] = useState('');
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     setToken(token);
@@ -31,23 +28,25 @@ function TransactionContainer(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // addTransaction({ title, amount: Number(amount) })
+
+    // addTransaction(transactionForm)
   
-    function addExpense(transactionForm) {
-      const expense = {
-        title: transactionForm.title,
-        amount: -1 * Number(transactionForm.expense),
-        isExpense: true
-      }
-      const transaction = axios.post('/transaction/add', expense, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-        .then(transaction => console.log(transaction))
-        .catch(error => console.log(error));
+    function addTransaction(transactionForm) {
+      console.log(transactionForm)
+      // const expense = {
+      //   title: transactionForm.title,
+      //   amount: -1 * Number(transactionForm.expense),
+      //   isExpense: true
+      // }
+      // const transaction = axios.post('/transaction/add', expense, {
+      //   headers: {
+      //     'Authorization': `Bearer ${token}`
+      //   }
+      // })
+      //   .then(transaction => console.log(transaction))
+      //   .catch(error => console.log(error));
     }
-    // addExpense(transactionForm);
+    addTransaction(transactionForm);
 
     setTransactions((prevtransactions) => {
       let newTransaction;
@@ -114,12 +113,11 @@ function TransactionContainer(props) {
 
   return (
     <>
-        {/* <TabComponent isExpense={isExpense} changeTab={changeTab} styles={styles} /> */}
         <AmountLeftComponent amountRemaining={amountRemaining} />
         <div style={{maxHeight: '400px', overflow: 'auto'}}  className="w-3/4 sm:max-w-md lg:max-w-md mx-auto py-4 px-2 bg-white">
           <p>Your recent transactions:</p>
-          {transactions.map(transaction => 
-            <TransactionList transaction={transaction} transactionsToDisplay={5} />)
+          {transactions.map((transaction, index) => 
+            <TransactionList key={index} transaction={transaction} transactionsToDisplay={5}  />)
           }
           <button className="text-center text-gray-900 bg-gray-400">View older transations</button>
         </div>

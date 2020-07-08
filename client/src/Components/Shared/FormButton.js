@@ -6,4 +6,4 @@ function FormButton(props) {
     )
 }
 
-export default FormButton
+export default FormButton;

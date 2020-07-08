@@ -8,7 +8,8 @@ import { AuthContext } from '../context/AuthContext';
 function HomeComponent(props) {
 
     const { user, setUser } = useContext(AuthContext);
-    
+    const [loadingState, setLoadingState] = React.useState(false);
+
     const [ error, setError ] = React.useState('');
     const [ page, setPage ] = React.useState('log in');
 
@@ -26,34 +27,41 @@ function HomeComponent(props) {
 
     const loginUser = async (e) => {
         e.preventDefault();
+        setLoadingState(true)
         try {
             const { data } = await axios.post('/user/login', loginData);
 
             const user = { ...data.user, token: data.token };
             setUser(user);
-
+            setLoadingState(false);
+            
             localStorage.setItem('user', JSON.stringify(user));
             
             props.history.push('/app');
         } catch(error) {            
-            console.log(error.message)
+            // An object is returned from the server with a property of errorMessage pointing to the appropriate error message
+            const { errorMessage } = error.response.data;
+            setLoadingState(false)
+            setError(errorMessage);
         }           
     }
 
     const signUpUser = async (e) => {
         e.preventDefault();
-
+        setLoadingState(true);
         try {
             const { data } = await axios.post('/user/signup', signUpData);
 
             const user = { ...data.user, token: data.token };
             setUser(user);
+            setLoadingState(false);
 
             localStorage.setItem('user', JSON.stringify(user));
-            
             props.history.push('/app');
         } catch(error) {            
-            console.log(error.message)
+            const { errorMessage } = error.response.data;
+            setLoadingState(false)
+            setError(errorMessage);
         }      
     }
 
@@ -83,7 +91,13 @@ function HomeComponent(props) {
 
     if(page === 'log in') {
         return (
-            <LogIn setPage={setPage} loginUser={loginUser} updateLoginData={updateLoginData} loginData={loginData} />
+            <LogIn 
+                setPage={setPage} 
+                loginUser={loginUser} 
+                updateLoginData={updateLoginData} 
+                loginData={loginData} 
+                error={error} 
+                loadingState={loadingState} />
         )
     } else {
         return (
@@ -91,7 +105,9 @@ function HomeComponent(props) {
                 setPage={setPage}
                 signUpUser={signUpUser}
                 updateSignUpData={updateSignUpData}
-                signUpData={signUpData} />
+                signUpData={signUpData} 
+                error={error}
+                loadingState={loadingState} />
         )
     }
 }

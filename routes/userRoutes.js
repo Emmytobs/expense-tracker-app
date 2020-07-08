@@ -15,7 +15,7 @@ userRoute.post('/signup', async (req, res) => {
         const token = await user.generateJWT();
         res.status(201).json({user, token});
     } catch(error) {
-        res.status(400).json(error);
+        res.status(400).json({"errorMessage": error.message});
     }
 })
 
@@ -26,7 +26,7 @@ userRoute.post('/login', async (req, res) => {
         const token = await user.generateJWT();
         res.json({ user, token });
     } catch(error) {
-        res.status(404).send({"error": error.message});
+        res.status(404).json({"errorMessage": error.message});
     }
 })
 

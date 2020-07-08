@@ -21,11 +21,11 @@ function TransactionFormComponent(props) {
           </div>
           <div className="inline-block p-3">
             <input type="radio" name='type' value="expense" onChange={props.handleChange} checked={props.transactionForm.type === 'expense'}/>
-            <label>Expense</label>
+            <label className="ml-2">Expense</label>
           </div>
           <div className="inline-block p-3">
             <input type="radio" name='type' value="income" onChange={props.handleChange} checked={props.transactionForm.type === 'income'}/>
-            <label>Income</label>
+            <label className="ml-2">Income</label>
           </div>
           <FormInput 
             name="amount"
