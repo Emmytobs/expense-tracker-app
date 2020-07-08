@@ -13,8 +13,9 @@ const transactionSchema = new Schema({
         required: true,
         trim: true,
     },
-    isExpense: { 
-        type: Boolean,
+    type: { 
+        type: String,
+        required: true
     },
     owner: {}
 }, {

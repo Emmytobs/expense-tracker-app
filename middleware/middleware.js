@@ -19,7 +19,7 @@ module.exports = function middleware() {
             req.token = token;
             next();
         } catch(error) {
-            res.status(400).json(error);            
+            res.status(400).json(error.message);            
         }
         
     }  

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import styles from "./TransactionContainer.module.css";
 import { GlobalContext } from '../../context/GlobalContext';
+import { AuthContext } from '../../context/AuthContext';
 // import axios
 
 import TransactionList from "./TransactionListComponent";
@@ -20,10 +21,15 @@ function TransactionContainer(props) {
   const [amountRemaining, setAmountRemaining] = useState(0);
   
   const [ token, setToken ] = useState('');
+  const { user } = React.useContext(AuthContext)
   
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setToken(token);
+    // const token = localStorage.getItem('token');
+    // if(token) {
+    //   setToken(token)
+    //   return;
+    // }
+    setToken(user.token);
   }, [])
 
   const handleSubmit = async (e) => {
@@ -31,46 +37,49 @@ function TransactionContainer(props) {
 
     // addTransaction(transactionForm)
   
-    function addTransaction(transactionForm) {
-      console.log(transactionForm)
-      // const expense = {
-      //   title: transactionForm.title,
-      //   amount: -1 * Number(transactionForm.expense),
-      //   isExpense: true
-      // }
-      // const transaction = axios.post('/transaction/add', expense, {
-      //   headers: {
-      //     'Authorization': `Bearer ${token}`
-      //   }
-      // })
-      //   .then(transaction => console.log(transaction))
-      //   .catch(error => console.log(error));
-    }
-    addTransaction(transactionForm);
-
-    setTransactions((prevtransactions) => {
+    async function addTransaction(transactionForm) {
+      // console.log(transactionForm)
       let newTransaction;
       if (transactionForm.type === "expense") {
-        newTransaction = [
-          ...prevtransactions,
+        newTransaction = 
           {
             ...transactionForm,
             // Since it is an expense, the amount should be a negative value
             amount: -1 * Number(transactionForm.amount)
           }
-        ];
       } else {
-        newTransaction = [
-          ...prevtransactions,
+        newTransaction =
           {
             ...transactionForm,
             // If it is not an expense, the amount should be a positive value
             amount: Number(transactionForm.amount)
-          },
-        ];
+          }
       }
-      return newTransaction;
-    });
+      
+      try {
+        const transaction = await axios.post('/transaction', newTransaction, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        const { title, amount, type } = transaction.data;
+        setTransactions(prevTransactions => {
+          return [
+            ...prevTransactions,
+            {
+              title,
+              amount,
+              type
+            }
+          ]
+        })
+
+      } 
+      catch(error) {
+        console.log(error.response.data)
+      }
+    }
+    addTransaction(transactionForm);
   };
 
   const handleChange = (e) => {
@@ -130,8 +139,6 @@ function TransactionContainer(props) {
           transactionFormStyle={styles.transactionForm}
           transactionForm={transactionForm}
         />
-
-        
     </>
   );
 }

@@ -5,7 +5,7 @@ const transactionRoutes = express.Router();
 
 // Create a new transaction
 transactionRoutes.post('/transaction', authorizeRequest, async (req, res) => {
-    const { title, amount } = req.body;
+    const { title, amount, type } = req.body;
     if(typeof amount === 'string') {
         Number(amount);
     }
@@ -13,7 +13,7 @@ transactionRoutes.post('/transaction', authorizeRequest, async (req, res) => {
     const transaction = new Transaction({
         title,
         amount,
-        isExpense: amount < 0 ? true : false,
+        type,
         owner
     });
     await transaction.save()
@@ -23,19 +23,24 @@ transactionRoutes.post('/transaction', authorizeRequest, async (req, res) => {
 // Get all transactions
 transactionRoutes.get('/transactions', authorizeRequest, async (req, res) => {
     // GET /transactions?isExpense=true&amount=10&sortBy=createdAt_-1&limit=5&skip=0
-    const { isExpense, amount, limit = 10, skip = 0, sortBy } = req.query;
+    const { type, amount, title, limit = 10, skip = 0, sortBy } = req.query;
 
     let match = {};
     let sort = {
     }
     
-    if(isExpense) {
-        match = {...match, isExpense}
+    // Now using the type property to differentiate between income and expense instead of the isExpense boolean property
+    if(type) {
+        match = {...match, type}
     } 
     if(amount) {
         match = {...match, amount}
     }
+    if(title) {
+        match = {...match, title}
+    }
     if(sortBy) {
+        // To sort by the type, when type=1, thats ascending, since the 'e' in expense comes before the 'i' in income, it will show the expenses first, then the income after
         const [propertyToSort, orderToSort] =  sortBy.split('_');
         sort[propertyToSort] = orderToSort === '-1' ? -1 : 1;
     }
@@ -51,7 +56,7 @@ transactionRoutes.get('/transactions', authorizeRequest, async (req, res) => {
         }).execPopulate();
         res.json(req.user.transactions);
     } catch(error) {
-        res.status(500).json(error);
+        res.status(500).json({"errorMessgae": error.message});
     }
 })
 

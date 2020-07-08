@@ -35,7 +35,7 @@ function HomeComponent(props) {
             setUser(user);
             setLoadingState(false);
             
-            localStorage.setItem('user', JSON.stringify(user));
+            // localStorage.setItem('token', JSON.stringify(user.token));
             
             props.history.push('/app');
         } catch(error) {            
