@@ -3,7 +3,6 @@ const User = require('../models/userModel')
 const userRoute = express.Router();
 const app = express();
 const middleware = require('../middleware/middleware')();
-
 // Hash user's password using the middleware
 userRoute.use('/signup', middleware.hashPassword);
 userRoute.post('/signup', async (req, res) => {

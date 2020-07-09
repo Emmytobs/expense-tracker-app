@@ -7,7 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 
 function HomeComponent(props) {
 
-    const { user, setUser } = useContext(AuthContext);
+    const auth = useContext(AuthContext);
     const [loadingState, setLoadingState] = React.useState(false);
 
     const [ error, setError ] = React.useState('');
@@ -28,41 +28,55 @@ function HomeComponent(props) {
     const loginUser = async (e) => {
         e.preventDefault();
         setLoadingState(true)
-        try {
-            const { data } = await axios.post('/user/login', loginData);
 
-            const user = { ...data.user, token: data.token };
-            setUser(user);
-            setLoadingState(false);
-            
-            // localStorage.setItem('token', JSON.stringify(user.token));
-            
-            props.history.push('/app');
-        } catch(error) {            
+        const response = await auth.loginUser(loginData);
+
+        setLoadingState(false);
+
+        if(response.status === 404) {
             // An object is returned from the server with a property of errorMessage pointing to the appropriate error message
-            const { errorMessage } = error.response.data;
-            setLoadingState(false)
+            const { errorMessage } = response.data;
             setError(errorMessage);
-        }           
+        } else {
+            // No errors, everything went well. User is successfully logged in
+            setError('')
+            // Take the user to the app
+            props.history.push('/app')
+        }       
     }
 
     const signUpUser = async (e) => {
         e.preventDefault();
         setLoadingState(true);
-        try {
-            const { data } = await axios.post('/user/signup', signUpData);
 
-            const user = { ...data.user, token: data.token };
-            setUser(user);
-            setLoadingState(false);
+        const response = await auth.signUpUser(signUpData);
 
-            localStorage.setItem('user', JSON.stringify(user));
-            props.history.push('/app');
-        } catch(error) {            
-            const { errorMessage } = error.response.data;
-            setLoadingState(false)
+        setLoadingState(false);
+        console.log(response)
+        if(response.status === 201) {
+            // No errors, everything went well. A user was successfully created
+            setError('')
+            props.history.push('/app')
+        } else {
+            // An object is returned from the server with a property of "errorMessage" pointing to the appropriate error message
+            const { errorMessage } = response.data;
             setError(errorMessage);
-        }      
+        }       
+
+        // try {
+        //     const { data } = await axios.post('/user/signup', signUpData);
+
+        //     const user = { ...data.user, token: data.token };
+        //     auth.setUser(user);
+        //     setLoadingState(false);
+
+        //     localStorage.setItem('user', JSON.stringify(user));
+        //     props.history.push('/app');
+        // } catch(error) {            
+        //     const { errorMessage } = error.response.data;
+        //     setLoadingState(false)
+        //     setError(errorMessage);
+        // }      
     }
 
     // const createTransaction = async (e) => {

@@ -19,26 +19,24 @@ function TransactionContainer(props) {
   const { transactions, setTransactions } = useContext(GlobalContext);
 
   const [amountRemaining, setAmountRemaining] = useState(0);
+  const [isLoading, setIsLoading] = useState(false)
   
   const [ token, setToken ] = useState('');
   const { user } = React.useContext(AuthContext)
   
   useEffect(() => {
+    
     // const token = localStorage.getItem('token');
     // if(token) {
     //   setToken(token)
     //   return;
     // }
-    setToken(user.token);
+    // setToken(user.token);
   }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // addTransaction(transactionForm)
-  
     async function addTransaction(transactionForm) {
-      // console.log(transactionForm)
       let newTransaction;
       if (transactionForm.type === "expense") {
         newTransaction = 
@@ -59,7 +57,7 @@ function TransactionContainer(props) {
       try {
         const transaction = await axios.post('/transaction', newTransaction, {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${user.token}`
           }
         })
         const { title, amount, type } = transaction.data;
@@ -73,12 +71,14 @@ function TransactionContainer(props) {
             }
           ]
         })
-
+        setIsLoading(false)
       } 
       catch(error) {
         console.log(error.response.data)
+        setIsLoading(false)
       }
     }
+    setIsLoading(true)
     addTransaction(transactionForm);
   };
 
@@ -121,7 +121,7 @@ function TransactionContainer(props) {
   }, [transactions])
 
   return (
-    <>
+    <div className="" styles={{opacity: isLoading && "0.5"}}>
         <AmountLeftComponent amountRemaining={amountRemaining} />
         <div style={{maxHeight: '400px', overflow: 'auto'}}  className="w-3/4 sm:max-w-md lg:max-w-md mx-auto py-4 px-2 bg-white">
           <p>Your recent transactions:</p>
@@ -139,7 +139,7 @@ function TransactionContainer(props) {
           transactionFormStyle={styles.transactionForm}
           transactionForm={transactionForm}
         />
-    </>
+    </div>
   );
 }
 
