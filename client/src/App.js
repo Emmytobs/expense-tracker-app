@@ -4,10 +4,9 @@ import Header from './Components/Header'
 import TransactionContainer from './Components/TransactionContainer/TransactionContainerComponent';
 import ProtectedTransactionContainer from './ProtectedRoutes/ProtectedTransactionContainer';
 import Home from './Components/Home';
-import { AuthProvider, AuthContext } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { GlobalProvider } from './context/GlobalContext';
-import { Route, Switch, Redirect } from 'react-router-dom';
-import auth from './auth/auth'
+import { Route, Switch } from 'react-router-dom';
 import './App.css';
 
 function App(props) {

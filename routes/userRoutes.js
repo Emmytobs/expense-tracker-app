@@ -1,8 +1,10 @@
 const express = require('express');
 const User = require('../models/userModel')
-const userRoute = express.Router();
 const app = express();
 const middleware = require('../middleware/middleware')();
+
+const userRoute = express.Router();
+
 // Hash user's password using the middleware
 userRoute.use('/signup', middleware.hashPassword);
 userRoute.post('/signup', async (req, res) => {
@@ -60,5 +62,4 @@ userRoute.delete('/delete', async (req, res) => {
     await req.user.remove();
     res.json(req.user)
 })
-
 module.exports = userRoute;

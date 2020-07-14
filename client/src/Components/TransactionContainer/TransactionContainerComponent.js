@@ -20,18 +20,16 @@ function TransactionContainer(props) {
 
   const [amountRemaining, setAmountRemaining] = useState(0);
   const [isLoading, setIsLoading] = useState(false)
-  
-  const [ token, setToken ] = useState('');
+
   const { user } = React.useContext(AuthContext)
   
   useEffect(() => {
-    
-    // const token = localStorage.getItem('token');
-    // if(token) {
-    //   setToken(token)
-    //   return;
-    // }
-    // setToken(user.token);
+    if(user) {
+      console.log(user, ' is defined');
+    } else {
+      console.log('user is not defined');
+      // props.history.goBack()
+    }
   }, [])
 
   const handleSubmit = async (e) => {
@@ -128,7 +126,7 @@ function TransactionContainer(props) {
           {transactions.map((transaction, index) => 
             <TransactionList key={index} transaction={transaction} transactionsToDisplay={5}  />)
           }
-          <button className="text-center text-gray-900 bg-gray-400">View older transations</button>
+          <button className="text-center text-gray-900 bg-gray-400" onClick={() => props.history.goBack()}>View older transations</button>
         </div>
         <div className="text-center mt-4">
           Create a new transaction

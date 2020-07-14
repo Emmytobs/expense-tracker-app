@@ -13,14 +13,9 @@ const transactionRoute = require('./routes/transactionRoutes');
 app.use('/user', userRoute);
 app.use(transactionRoute);
 
-app.get('/books', (req, res) => {
-    res.json([
-        {
-            title: 'Book_1',
-            author: 'author_1'
-        }
-    ])
-})
+// app.get('*', (req, res) => {
+//     res.sendFile(publicDirectoryPath)
+// })
 
 app.listen(PORT, () => {
     console.log('Server running on port ' + PORT)

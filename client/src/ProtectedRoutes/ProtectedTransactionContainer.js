@@ -4,17 +4,17 @@ import { AuthContext } from '../context/AuthContext';
 
 
 function ProtectedTransactionContainer({ component: RouteComponent, ...remainingProps }) {
-  const { user } = React.useContext(AuthContext);
+  const savedUser = JSON.parse(localStorage.getItem('user'));
 
   return (
       <Route 
         {...remainingProps}
         render={(routeProps) => {
-          // if(!!user) {
+          if(savedUser) {
             return <RouteComponent {...routeProps} />
-          // } else {
-          //   return <Redirect to={"/"} />
-          // }
+          } else {
+            return <Redirect to={"/"} />
+          }
         }} 
       />
   )
