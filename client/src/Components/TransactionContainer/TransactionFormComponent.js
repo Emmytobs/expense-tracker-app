@@ -1,13 +1,15 @@
 import React from 'react'
 import Form from '../Shared/Form'
 import FormInput from '../Shared/FormInput'
-import FormButton from '../Shared/FormButton'
+import FormButton from '../Shared/FormButton';
+import ErrorMessage from '../Shared/ErrorMessage'
 
 
 function TransactionFormComponent(props) {
 
     return (
         <Form onSubmit={props.handleSubmit}>
+          {props.error && <ErrorMessage errorMessage={props.error} />}
           <FormInput 
             name="title"
             type="text"

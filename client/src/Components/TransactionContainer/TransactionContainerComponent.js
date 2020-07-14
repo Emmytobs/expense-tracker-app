@@ -21,6 +21,8 @@ function TransactionContainer(props) {
   const [amountRemaining, setAmountRemaining] = useState(0);
   const [isLoading, setIsLoading] = useState(false)
 
+  const [error, setError] = useState('')
+
   const { user } = React.useContext(AuthContext)
   
   useEffect(() => {
@@ -34,6 +36,13 @@ function TransactionContainer(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { title, amount, type } = transactionForm;
+    // If an error exists, add set an error messgae
+    if(!title || !amount || !type ) {
+      return setError('All fields required')
+    }
+    // If the error no longer exists, remove it
+    setError('');
     async function addTransaction(transactionForm) {
       let newTransaction;
       if (transactionForm.type === "expense") {
@@ -134,8 +143,8 @@ function TransactionContainer(props) {
         <TransactionFormComponent 
           handleChange={handleChange} 
           handleSubmit={handleSubmit} 
-          transactionFormStyle={styles.transactionForm}
           transactionForm={transactionForm}
+          error={error}
         />
     </div>
   );
