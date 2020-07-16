@@ -1,7 +1,4 @@
-import axios from 'axios'
-
 class Auth {
-
     user;
     authenticated;
     constructor() {

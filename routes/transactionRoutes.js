@@ -56,7 +56,7 @@ transactionRoutes.get('/transactions', authorizeRequest, async (req, res) => {
         }).execPopulate();
         res.json(req.user.transactions);
     } catch(error) {
-        res.status(500).json({"errorMessgae": error.message});
+        res.status(500).json({"errorMessage": error.message});
     }
 })
 

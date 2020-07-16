@@ -6,7 +6,6 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     
     const [ user, setUser ] = useState(null);
-   
     const [isAuthenticated, setIsAuthenticated] = useState();
     const loginUser = async (loginData) => {
         try {
@@ -52,12 +51,12 @@ export const AuthProvider = ({ children }) => {
     const logoutUser = async () => {
     }
 
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'))
-        if(user) {
-            setUser(user);
-        }
-    }, [])
+    // useEffect(() => {
+    //     const user = JSON.parse(localStorage.getItem('user'))
+    //     if(user) {
+    //         setUser(user);
+    //     }
+    // }, [])
 
     return (
         <AuthContext.Provider value={{ user, setUser, loginUser, logoutUser, signUpUser, isAuthenticated }}>
