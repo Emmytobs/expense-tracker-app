@@ -8,8 +8,12 @@ function ProtectedTransactionContainer({ component: RouteComponent, ...remaining
   const { setUser, user } = React.useContext(AuthContext);
   const [ isLoading, setIsLoading ] = React.useState(true);
   
+  const checkUserRef = React.useRef(1);
+
   let savedUser;
   React.useEffect(() => {
+    // if(checkUserRef.current ==)
+    console.log(checkUserRef)
     savedUser = JSON.parse(localStorage.getItem('user'));
     // If user is saved
     if(savedUser) {
@@ -30,11 +34,7 @@ function ProtectedTransactionContainer({ component: RouteComponent, ...remaining
         <Route 
           {...remainingProps}
           render={(routeProps) => {
-            // if(savedUser) {
               return <RouteComponent {...routeProps} />
-            // } else {
-            //   return <Redirect to={"/"} />
-            // }
           }} 
         />
     )

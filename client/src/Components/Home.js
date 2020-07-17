@@ -31,15 +31,23 @@ function HomeComponent(props) {
 
         const response = await auth.loginUser(loginData);
 
-        setLoadingState(false);
+        // setLoadingState(false);
 
         if(response.status === 404) {
             // An object is returned from the server with a property of errorMessage pointing to the appropriate error message
             const { errorMessage } = response.data;
             setError(errorMessage);
         } else {
-            // No errors, everything went well. User is successfully logged in
-            setError('')
+             // Destructure the data object from the response
+             const { data } = response;
+             // Create a user variable to only contain the username and the token
+             const user = { username: data.user.username, token: data.token };
+             // Set the user state
+             auth.setUser(user);
+             setLoadingState(false);
+             // No errors, everything went well. User is successfully logged in
+             setError('')
+             localStorage.setItem('user', JSON.stringify(user));
             // Take the user to the app
             props.history.push('/app')
         }       

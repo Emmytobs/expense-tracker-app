@@ -11,12 +11,12 @@ export const AuthProvider = ({ children }) => {
         try {
             
             const response = await axios.post('/user/login', loginData);
-            // Destructure the data object from the response
-            const { data } = response;
-            // Create a user variable to only contain the username and the token
-            const user = { username: data.user.username, token: data.token };
-            // Set the user state
-            setUser(user);
+            // // Destructure the data object from the response
+            // const { data } = response;
+            // // Create a user variable to only contain the username and the token
+            // const user = { username: data.user.username, token: data.token };
+            // // Set the user state
+            // setUser(user);
 
             localStorage.setItem('user', JSON.stringify(user));
             return response;
