@@ -17,6 +17,9 @@ function TransactionContainer(props) {
   const { transactions, setTransactions } = useContext(GlobalContext);
 
   const [amountRemaining, setAmountRemaining] = useState(0);
+  const [onLoading, setOnLoading] = useState(false)
+  
+  // Loading for the 
   const [isLoading, setIsLoading] = useState(false)
   const [isFetchingTransactions, setIsFetchingTransactions] = useState(true);
 
@@ -26,9 +29,11 @@ function TransactionContainer(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setOnLoading(true);
     const { title, amount, type } = transactionForm;
     // If an error exists, set an error message
     if(!title || !amount || !type ) {
+      setOnLoading(false);
       return setError('All fields required')
     }
     // If the error no longer exists, remove it
@@ -70,15 +75,17 @@ function TransactionContainer(props) {
             ...prevTransactions
           ]
         })
-        setIsLoading(false)
+        setOnLoading(false)
+        // setIsLoading(false)
       } 
       catch(error) {
         setError("Couldn't add transaction. Check your internet connection")
         console.log(error.response.data)
-        setIsLoading(false)
+        setOnLoading(false)
+        // setIsLoading(false)
       }
     }
-    setIsLoading(true)
+    // setIsLoading(true)
     addTransaction(transactionForm);
   };
 
@@ -90,12 +97,24 @@ function TransactionContainer(props) {
     })
   };
   
-  const deleteTransaction = (transactionId) => {
+  const deleteTransaction = async (transactionId) => {
     // console.log(transactions);
-    const remainingTransactions = transactions.filter(transaction => transaction.id !== transactionId);
-    console.log(remainingTransactions)
-    setTransactions(remainingTransactions);
+    try {
+      await axios.delete(`/transaction/${transactionId}`, {
+        headers: {
+          "Authorization": `Bearer ${user.token}`
+        }
+      });
+      const remainingTransactions = transactions.filter(transaction => transaction.id !== transactionId);
+      setTransactions(remainingTransactions);
+    } catch(error) {
+      console.log(error.response.data)
+    }
   }
+
+  useEffect(() => {
+    console.log(onLoading);
+  }, [onLoading])
 
   // Everytime the transaction changes, this is run to calculate the amount remaining
   useEffect(() => {
@@ -195,7 +214,7 @@ function TransactionContainer(props) {
           
           <button 
             className="text-center text-gray-900 bg-gray-400" 
-            onClick={() => window.location = '/'}>
+            >
               View older transations
           </button>
         </div>
@@ -209,6 +228,7 @@ function TransactionContainer(props) {
           handleSubmit={handleSubmit} 
           transactionForm={transactionForm}
           error={error}
+          onLoading={onLoading}
         />
     </div>
   );

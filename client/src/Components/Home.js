@@ -61,37 +61,8 @@ function HomeComponent(props) {
             // An object is returned from the server with a property of "errorMessage" pointing to the appropriate error message
             const { errorMessage } = response.data;
             setError(errorMessage);
-        }       
-
-        // try {
-        //     const { data } = await axios.post('/user/signup', signUpData);
-
-        //     const user = { ...data.user, token: data.token };
-        //     auth.setUser(user);
-        //     setLoadingState(false);
-
-        //     localStorage.setItem('user', JSON.stringify(user));
-        //     props.history.push('/app');
-        // } catch(error) {            
-        //     const { errorMessage } = error.response.data;
-        //     setLoadingState(false)
-        //     setError(errorMessage);
-        // }      
+        }
     }
-
-    // const createTransaction = async (e) => {
-    //     e.preventDefault();
-    //     console.log(loginInfo);
-    //     const { title, amount } = loginInfo;
-    //     const body = { title, amount: Number(amount) };
-    //     // Why this error: Unhandled Rejection (TypeError): name.toUpperCase is not a function?
-    //     const transaction = await axios.post('/transaction/add', body, {
-    //         headers: {
-    //             'Authorization': `Bearer ${user.token}`
-    //         }
-    //     });
-    //     console.log(transaction)
-    // }
 
     const updateLoginData = (e) => {
         const { name, value } = e.target;
@@ -102,6 +73,17 @@ function HomeComponent(props) {
         const { name, value } = e.target;
         setSignUpData({ ...signUpData, [name]: value });
     }
+
+    const checkIfSavedUserExists = () => {
+        const savedUser = JSON.parse(localStorage.getItem('user'));
+        if(savedUser) {
+           window.location = "/app";
+           return;  
+        // console.log(token)
+        }
+    }
+
+    checkIfSavedUserExists();
 
     if(page === 'log in') {
         return (

@@ -6,7 +6,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     
     const [ user, setUser ] = useState(null);
-    const [isAuthenticated, setIsAuthenticated] = useState();
+    
     const loginUser = async (loginData) => {
         try {
             
@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
             const user = { username: data.user.username, token: data.token };
             // Set the user state
             setUser(user);
-            setIsAuthenticated(true);
 
             localStorage.setItem('user', JSON.stringify(user));
             return response;
@@ -49,6 +48,18 @@ export const AuthProvider = ({ children }) => {
     } 
 
     const logoutUser = async () => {
+        try {
+            const response = await axios.delete("/user/logout", {
+                headers: {
+                    "Authorization": `Bearer ${user.token}`
+                }
+            });
+            setUser(null);
+            localStorage.removeItem('user');
+            return response;
+        } catch(error) {
+            return error.response;
+        }
     }
 
     // useEffect(() => {
@@ -59,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     // }, [])
 
     return (
-        <AuthContext.Provider value={{ user, setUser, loginUser, logoutUser, signUpUser, isAuthenticated }}>
+        <AuthContext.Provider value={{ user, setUser, loginUser, logoutUser, signUpUser }}>
             {children}
         </AuthContext.Provider>
     )

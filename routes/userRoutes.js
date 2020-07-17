@@ -5,7 +5,11 @@ const middleware = require('../middleware/middleware')();
 
 const userRoute = express.Router();
 
-// Hash user's password using the middleware
+// 
+// Route handler for user signup
+// 
+
+// Hash user's password using the middleware when signing up
 userRoute.use('/signup', middleware.hashPassword);
 userRoute.post('/signup', async (req, res) => {
     // Add the hashed password, then
@@ -20,6 +24,9 @@ userRoute.post('/signup', async (req, res) => {
     }
 })
 
+// 
+// Route handler for user login
+// 
 userRoute.post('/login', async (req, res) => {
     try {
         // Write code to check db for a user that matches the username, password, and email in the request body
@@ -31,6 +38,23 @@ userRoute.post('/login', async (req, res) => {
     }
 })
 
+// 
+// Route handler for user logout
+// 
+userRoute.delete('/logout', middleware.authorizeRequest, async (req, res) => {
+    try {
+        const { user } = req;
+        user.tokens = user.tokens.filter(tokenObject => tokenObject.token !== req.token);
+        await user.save();
+        res.json();
+    } catch(error) {
+        res.json({ "errorMessage": error.message })
+    }
+})
+
+// 
+// Route handler to logut user form all devices
+// 
 userRoute.delete('/logoutAll', middleware.authorizeRequest, async (req, res) => {
     try {
         const { user } = req
@@ -41,6 +65,10 @@ userRoute.delete('/logoutAll', middleware.authorizeRequest, async (req, res) => 
         res.status(404).send(error);
     }
 })
+
+// 
+// Route handler to get user profile
+// 
 
 // Authenticate the user using middleware
 userRoute.use('/profile', middleware.authorizeRequest);
@@ -55,6 +83,10 @@ userRoute.get('/profile', (req, res) => {
     // res.json(users);
 })
 
+
+// 
+// Route handler to delete user account
+// 
 userRoute.use('/delete', middleware.authorizeRequest);
 userRoute.use('/delete', middleware.clearDeletedUserTransactions);
 userRoute.delete('/delete', async (req, res) => {

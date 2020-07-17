@@ -8,7 +8,7 @@ import ErrorMessage from '../Shared/ErrorMessage'
 function TransactionFormComponent(props) {
 
     return (
-        <Form onSubmit={props.handleSubmit}>
+        <Form onSubmit={props.handleSubmit} onLoading={props.onLoading}>
           {props.error && <ErrorMessage errorMessage={props.error} />}
           <FormInput 
             name="title"
