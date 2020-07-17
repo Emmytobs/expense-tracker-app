@@ -57,11 +57,12 @@ function TransactionContainer(props) {
             'Authorization': `Bearer ${user.token}`
           }
         })
-        const { title, amount, type } = transaction.data;
+        const { id, title, amount, type } = transaction.data;
         setTransactions(prevTransactions => {
           // Set the most recent transactions to appear at the top
           return [
             {
+              id,
               title,
               amount,
               type
@@ -72,6 +73,7 @@ function TransactionContainer(props) {
         setIsLoading(false)
       } 
       catch(error) {
+        setError("Couldn't add transaction. Check your internet connection")
         console.log(error.response.data)
         setIsLoading(false)
       }
@@ -87,11 +89,20 @@ function TransactionContainer(props) {
       [name]: value
     })
   };
+  
+  const deleteTransaction = (transactionId) => {
+    // console.log(transactions);
+    const remainingTransactions = transactions.filter(transaction => transaction.id !== transactionId);
+    console.log(remainingTransactions)
+    setTransactions(remainingTransactions);
+  }
 
   // Everytime the transaction changes, this is run to calculate the amount remaining
   useEffect(() => {
     // If there are no transactions, do nothing
-    if(transactions.length === 0) return;
+    if(transactions.length === 0) {
+      return setAmountRemaining(0)
+    }
 
     // This contains an array where the amount is > 0
     // We filter it to return an array where amount > 0
@@ -146,6 +157,7 @@ function TransactionContainer(props) {
         // Get the response and map each to an array with only the title, amount, and type properties of each transaction
         const recentTransactions = response.data.map(transaction => {
           return {
+            id: transaction._id,
             title: transaction.title,
             amount: transaction.amount,
             type: transaction.type
@@ -178,12 +190,12 @@ function TransactionContainer(props) {
           <p>Your recent transactions:</p>
 
           {transactions.map((transaction, index) => 
-            <TransactionList key={index} transaction={transaction} transactionsToDisplay={5}  />)
+            <TransactionList key={index} transaction={transaction} deleteTransaction={deleteTransaction} />)
           }
           
           <button 
             className="text-center text-gray-900 bg-gray-400" 
-            onClick={() => props.history.goBack()}>
+            onClick={() => window.location = '/'}>
               View older transations
           </button>
         </div>
