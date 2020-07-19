@@ -44,7 +44,7 @@ userSchema.methods.toJSON = function () {
 
 userSchema.methods.generateJWT = async function() {
     // Create a token for each the user
-    const token = jwt.sign({ _id: this._id.toString() }, 'secret');
+    const token = jwt.sign({ _id: this._id.toString() }, process.env.JWT_SECRET);
     // Add the token to the beginning of the tokens array
     this.tokens.unshift({ token });
     // Save the user with the new token.
