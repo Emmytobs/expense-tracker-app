@@ -2,12 +2,14 @@ const path = require('path');
 const express = require('express');
 const app = express();
 
-require('dotenv').config();
 require('./db/mongoose');
 
 app.use(express.json())
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
+
+// Load in the environment variables
+require('dotenv').config();
 
 const userRoute = require('./routes/userRoutes');
 const transactionRoute = require('./routes/transactionRoutes');
