@@ -16,13 +16,13 @@ const transactionRoute = require('./routes/transactionRoutes');
 app.use('/user', userRoute);
 app.use(transactionRoute);
 
-// if(process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') {
     const publicDirectoryPath = path.join(__dirname, 'client/build');
     app.use(express.static(publicDirectoryPath));
     app.get('*', (req, res) => {
         res.sendFile(path.resolve('client', 'build', 'index.html'))
     })
-// }
+}
 
 app.listen(PORT, () => {
     console.log('Server running on port ' + PORT)
