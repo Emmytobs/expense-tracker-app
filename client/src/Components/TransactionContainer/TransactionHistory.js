@@ -30,7 +30,7 @@ function TransactionHistory(props) {
             <button 
               className="text-center text-gray-900 bg-gray-400" 
               >
-                View older transations
+                View older transactions
             </button>
           </div>
         </div>

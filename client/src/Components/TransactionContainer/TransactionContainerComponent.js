@@ -17,7 +17,7 @@ function TransactionContainer(props) {
 
   const [amountRemaining, setAmountRemaining] = useState(0);
   const [onLoading, setOnLoading] = useState(false)
-    
+
   
   const [isLoading, setIsLoading] = useState(false)
   const [isFetchingTransactions, setIsFetchingTransactions] = useState(true);
@@ -30,6 +30,7 @@ function TransactionContainer(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setOnLoading(true);
+
     const { title, amount, type } = transactionForm;
     // If an error exists, set an error message
     if(!title || !amount || !type ) {
@@ -178,7 +179,7 @@ function TransactionContainer(props) {
   }
 
   return (
-    <div className="" styles={{opacity: isLoading && "0.5"}}>
+    <div>
       <TransactionHistory amountRemaining={amountRemaining} transactions={transactions} handleDeleteTransaction={handleDeleteTransaction} hasNoTransactions={hasNoTransactions} />
 
       <div className="text-center mt-4">
