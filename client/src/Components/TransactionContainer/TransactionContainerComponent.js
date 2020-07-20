@@ -2,9 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { GlobalContext } from '../../context/GlobalContext';
 import { AuthContext } from '../../context/AuthContext';
 
-import TransactionList from "./TransactionListComponent";
 import TransactionFormComponent from './TransactionFormComponent';
-import AmountLeftComponent from './AmountLeftComponent';
+import TransactionHistory from './TransactionHistory';
 import axios from "axios";
 
 function TransactionContainer(props) {
@@ -14,14 +13,15 @@ function TransactionContainer(props) {
     amount: '',
     type: ''
   })
-  const { transactions, setTransactions } = useContext(GlobalContext);
+  const { transactions, setTransactions, deleteTransaction, addTransaction } = useContext(GlobalContext);
 
   const [amountRemaining, setAmountRemaining] = useState(0);
   const [onLoading, setOnLoading] = useState(false)
+    
   
-  // Loading for the 
   const [isLoading, setIsLoading] = useState(false)
   const [isFetchingTransactions, setIsFetchingTransactions] = useState(true);
+  const [hasNoTransactions, setHasNoTransactions] = useState(false)
 
   const [error, setError] = useState('')
 
@@ -38,55 +38,34 @@ function TransactionContainer(props) {
     }
     // If the error no longer exists, remove it
     setError('');
-    async function addTransaction(transactionForm) {
-      let newTransaction;
-      if (transactionForm.type === "expense") {
-        newTransaction = 
-          {
-            ...transactionForm,
-            // Since it is an expense, the amount should be a negative value
-            amount: -1 * Number(transactionForm.amount)
-          }
-      } else {
-        newTransaction =
-          {
-            ...transactionForm,
-            // If it is not an expense, the amount should be a positive value
-            amount: Number(transactionForm.amount)
-          }
-      }
+    const handleAddTransaction = async (transactionForm) => {
+      const response = await addTransaction(transactionForm);
+
+      setOnLoading(false);
       
-      try {
-        const transaction = await axios.post('/transaction', newTransaction, {
-          headers: {
-            'Authorization': `Bearer ${user.token}`
-          }
-        })
-        const { id, title, amount, type } = transaction.data;
-        setTransactions(prevTransactions => {
-          // Set the most recent transactions to appear at the top
-          return [
-            {
-              id,
-              title,
-              amount,
-              type
-            },
-            ...prevTransactions
-          ]
-        })
-        setOnLoading(false)
-        // setIsLoading(false)
-      } 
-      catch(error) {
+      if(response.status !== 201) {
         setError("Couldn't add transaction. Check your internet connection")
         console.log(error.response.data)
-        setOnLoading(false)
-        // setIsLoading(false)
+        return;
       }
+      
+      const { _id: id, title, amount, type } = response.data;
+      setTransactions(prevTransactions => {
+        // Set the most recent transactions to appear at the top
+        return [
+          {
+            id,
+            title,
+            amount,
+            type
+          },
+          ...prevTransactions
+        ]
+      })
+      // Empty the transaction form when a transaction has been successfully created
+      setTransactionForm({ title: '', amount: '', type: '' })
     }
-    // setIsLoading(true)
-    addTransaction(transactionForm);
+    handleAddTransaction(transactionForm);
   };
 
   const handleChange = (e) => {
@@ -97,31 +76,25 @@ function TransactionContainer(props) {
     })
   };
   
-  const deleteTransaction = async (transactionId) => {
-    // console.log(transactions);
-    try {
-      await axios.delete(`/transaction/${transactionId}`, {
-        headers: {
-          "Authorization": `Bearer ${user.token}`
-        }
-      });
-      const remainingTransactions = transactions.filter(transaction => transaction.id !== transactionId);
-      setTransactions(remainingTransactions);
-    } catch(error) {
-      console.log(error.response.data)
-    }
-  }
+  const handleDeleteTransaction = async (transactionId) => {
+    const response = await deleteTransaction(transactionId);
 
-  useEffect(() => {
-    console.log(onLoading);
-  }, [onLoading])
+    if(response.status !== 200) {
+      return console.log(error.response.data);
+    } 
+    const remainingTransactions = transactions.filter(transaction => transaction.id !== transactionId);
+    setTransactions(remainingTransactions);
+  }
 
   // Everytime the transaction changes, this is run to calculate the amount remaining
   useEffect(() => {
     // If there are no transactions, do nothing
     if(transactions.length === 0) {
-      return setAmountRemaining(0)
+      setAmountRemaining(0);
+      setHasNoTransactions(true);
+      return;
     }
+    setHasNoTransactions(false);
 
     // This contains an array where the amount is > 0
     // We filter it to return an array where amount > 0
@@ -158,6 +131,7 @@ function TransactionContainer(props) {
     if(income.length) {
       totalIncome = income.reduce((prev, current) => prev + current)
     }
+
     calculateAmountRemaining(totalExpense, totalIncome);
   }, [transactions])
 
@@ -183,6 +157,10 @@ function TransactionContainer(props) {
           } 
         })
 
+        if(recentTransactions.length == 0) {
+          setHasNoTransactions(true);
+        }
+      
         // Update the transactions in the state
         // Since the transactions in the global context is an array, break it up into 
         setTransactions([...transactions, ...recentTransactions]);
@@ -201,35 +179,19 @@ function TransactionContainer(props) {
 
   return (
     <div className="" styles={{opacity: isLoading && "0.5"}}>
-        <AmountLeftComponent amountRemaining={amountRemaining} />
+      <TransactionHistory amountRemaining={amountRemaining} transactions={transactions} handleDeleteTransaction={handleDeleteTransaction} hasNoTransactions={hasNoTransactions} />
 
-        <div 
-          style={{maxHeight: '400px', overflow: 'auto'}}  
-          className="w-3/4 sm:max-w-md lg:max-w-md mx-auto py-4 px-2 bg-white">
-          <p>Your recent transactions:</p>
+      <div className="text-center mt-4">
+        Create a new transaction
+      </div>
 
-          {transactions.map((transaction, index) => 
-            <TransactionList key={index} transaction={transaction} deleteTransaction={deleteTransaction} />)
-          }
-          
-          <button 
-            className="text-center text-gray-900 bg-gray-400" 
-            >
-              View older transations
-          </button>
-        </div>
-
-        <div className="text-center mt-4">
-          Create a new transaction
-        </div>
-
-        <TransactionFormComponent 
-          handleChange={handleChange} 
-          handleSubmit={handleSubmit} 
-          transactionForm={transactionForm}
-          error={error}
-          onLoading={onLoading}
-        />
+      <TransactionFormComponent 
+        handleChange={handleChange} 
+        handleSubmit={handleSubmit} 
+        transactionForm={transactionForm}
+        error={error}
+        onLoading={onLoading}
+      />
     </div>
   );
 }

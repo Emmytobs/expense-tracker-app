@@ -29,9 +29,15 @@ function HomeComponent(props) {
         e.preventDefault();
         setLoadingState(true)
 
+        const { email, password } = loginData;
+        if(!email || !password) {
+            setLoadingState(false);
+            return setError("Please fill in all fields");
+        }
+
         const response = await auth.loginUser(loginData);
 
-        // setLoadingState(false);
+        setLoadingState(false);
 
         if(response.status === 404) {
             // An object is returned from the server with a property of errorMessage pointing to the appropriate error message
@@ -44,7 +50,6 @@ function HomeComponent(props) {
             const user = { username: data.user.username, token: data.token };
             // Set the user state
             auth.setUser(user);
-            setLoadingState(false);
             // No errors, everything went well. User is successfully logged in
             setError('')
             localStorage.setItem('user', JSON.stringify(user));
@@ -57,10 +62,15 @@ function HomeComponent(props) {
         e.preventDefault();
         setLoadingState(true);
 
+        const { email, password } = signUpData;
+        if(!email || !password) {
+            setLoadingState(false);
+            return setError("Please fill in all fields");
+        }
+
         const response = await auth.signUpUser(signUpData);
 
         setLoadingState(false);
-        console.log(response)
         if(response.status === 201) {
             // No errors, everything went well. A user was successfully created
             setError('')

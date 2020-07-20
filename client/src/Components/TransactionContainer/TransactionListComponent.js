@@ -1,6 +1,6 @@
 import React from 'react';
 
-function TransactionList({ transaction, deleteTransaction }) {
+function TransactionList({ transaction, handleDeleteTransaction }) {
     if (transaction.amount > 0) {
         return (
         <div className="w-full py-2 px-5 my-3 relative bg-green-400">
@@ -11,7 +11,7 @@ function TransactionList({ transaction, deleteTransaction }) {
                     <p className="inline-block">${transaction.amount}</p>
                     <button 
                         className="text-black bg-white text-base text-center inline-block ml-2 px-3 py-1 cursor-pointer hover:text-red-800 font-bold hover:bg-opacity-75 transition-all hover:p-2 rounded-md "
-                        onClick={() => deleteTransaction(transaction.id)}>
+                        onClick={() => handleDeleteTransaction(transaction.id)}>
                             X
                     </button>
                 </div>
@@ -28,7 +28,7 @@ function TransactionList({ transaction, deleteTransaction }) {
                         <p className="inline-block">-${Math.abs(transaction.amount)}</p>
                         <button 
                             className="text-black bg-white text-base text-center inline-block ml-2 px-3 py-1 cursor-pointer hover:text-red-800 font-bold hover:bg-opacity-75 transition-all hover:p-2 rounded-md "
-                            onClick={() => deleteTransaction(transaction.id)}>
+                            onClick={() => handleDeleteTransaction(transaction.id)}>
                                 X
                         </button>
                     </div>
